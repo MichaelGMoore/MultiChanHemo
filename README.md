@@ -2,7 +2,7 @@
 MatLab Code for demixing widefield GCaMP data with multiple backscatter channels
 
 
-[.pdf](master/demixing_20190510_JNP_supp.pdf) containing supplementary figures 1-5 and Appendix for manuscript:
+[.pdf](master/Valley_et_al_supp.pdf) containing supplementary figures 1-5 and Appendix for manuscript:
 
 *Separation of hemodynamic signals from GCaMP fluorescence measured with widefield imaging.* 
 **M.T. Valley, M.G. Moore, J Zhuang, N Mesa, D Castelli, D Sullivan, M Reimers, J Waters**
