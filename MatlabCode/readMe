@@ -1,0 +1,86 @@
+% MultiChannel Hemodynamics Demixing and Cross-Validation
+
+% Version 3
+% 08/09/2019
+% Michael G Moore, Michigan State University
+
+% *************************************************************************
+% Script to train spatial model on GFP training data and compare results
+% with non-spatial Beer-Lambert models
+
+% Models:
+
+% PWR - Pixelwise Regression
+%   PWR_1       each reflectance channel regressed from fluor channel
+%   PWR         all reflectance channels regressed from fluor channel
+
+% BLR - Beer-Lambert Regression 
+%   BLR_DWA     discrete-wavelength approximation
+%   BLR_CW      continuuous-wavelength Beer-Lambert model
+
+% SMR - Spatial Model Regression
+%   SMR_1       Training and testing spatial-model on a single animal
+%   SMR_CV      Leave-one-animal-out cross-validation of spatial model
+%   SMR         model trained on all GFP animals for use on GCaMP animals
+
+% This project takes the following inputs from the user: 
+
+%   Beer-Lambert inputs:
+%       -Spectra for each reflectance channel
+%       -excitation and emission spectra for each fluor channel
+
+%   Spatial Model inputs:
+%       -video for each channel from several GFP animals
+
+% Data Preparation Guidelines:
+
+%   Each imaging session stored as HDF5 file with '.h5' extension, and with 
+%   the specified schema.
+
+%   All training GFP imaging session .h5 files are together in a single 
+%   directory 
+%       No other files are in this directory
+
+%   h5 schema:
+
+%       Spectral data:
+%           -datasets stored under group '/spectra'
+%           -Fluorescence spectra:
+%               excitation:  '/spectra/Fex' or '/spectra/F1ex' 
+%               emission:    '/spectra/Fem' or '/spectra/F1em'
+%           -Additional fluorophores
+%               '/spectra/F2ex' and 'spectra/F2em' and so on
+
+%           -Reflectance channels:
+%               '/spectra/R1' and 'spectra/R2' and so on
+
+%           -Number of reflectance channels
+%               -If number of reflectance channels = 1, only one
+%               dimension of Hb dynamics can be removed
+%               -If number of reflectance channels > 2, least squares will
+%               be used to infer HbO and HbR fluctuations
+      
+%           -each spectra given as [N x 2] array (N is number of wavelengths sampled)
+%               col 1 for wavelengths in nm
+%               col 2 for spectral weights
+%           -spectra need not be normalized
+%           -N need not be the same for each spectra
+
+%       Imaging data:
+%           -datasets stored under group'/images'
+%           
+%           -Fluorescence channel video:
+%               '/images/F' or 'images/F1'
+%           -additional Fluorescence channels
+%               '/images/F2' and so on
+%           -Reflectance channel videos
+%               '/images/R1' and '/images/R2' and so on
+%
+%           -Images stored as 3-dimensional arrays, with 3rd dimension 
+%           being the time dimension 
+%           -Videos from different channels are aligned spatially and 
+%           temporally, no additional alignment will be performed
+
+%       Additional Attributes
+%            '/animalID' and '/sessionID' unique identifiers are required
+ 
